@@ -4,6 +4,7 @@ import java.util.logging.Logger;
 
 import com.kcomp.dao.DeviceDAO;
 import com.kcomp.model.Device;
+import com.kcomp.model.User;
 
 public class DeviceServiceImpl implements DeviceService{
 
@@ -27,12 +28,18 @@ public class DeviceServiceImpl implements DeviceService{
 		return this.deviceDAO.findByIdentifier(identifier);
 	}
 
+	
 	public DeviceDAO getDeviceDao() {
 		return deviceDAO;
 	}
 
 	public void setDeviceDao(DeviceDAO deviceDao) {
 		this.deviceDAO = deviceDao;
+	}
+
+	public Device findDeviceByUser(User user) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

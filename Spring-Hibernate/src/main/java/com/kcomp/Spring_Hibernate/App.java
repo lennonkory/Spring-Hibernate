@@ -6,7 +6,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
-import com.kcomp.dao.DeviceHistoryDAO;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+
 import com.kcomp.dao.DeviceHistoryJpaDAO;
 import com.kcomp.dao.DeviceJpaDAO;
 import com.kcomp.dao.EnrollmentAssociationJpaDAO;
@@ -107,7 +109,6 @@ public class App
 	    }
 	}
 	
-	
 	public static void testDH(){
 
 		EntityManagerFactory entityManagerFactory = 
@@ -153,7 +154,13 @@ public class App
 	
     public static void main( String[] args ){
       
-    	testDH();
+    	ApplicationContext context = 
+                new AnnotationConfigApplicationContext(Config.class);
+    	
+    	Utils utils = context.getBean(Utils.class);
+    	
+    	utils.logOn("Kory", "1234");
+    	
     	
     }
 }

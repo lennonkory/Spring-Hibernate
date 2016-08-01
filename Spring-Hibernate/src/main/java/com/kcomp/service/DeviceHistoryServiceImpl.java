@@ -28,7 +28,6 @@ public class DeviceHistoryServiceImpl implements DeviceHistoryService{
 	}
 
 	public DeviceHistory findByUser(User user) {
-		
 		return deviceHistoryDAO.findByUser(user);
 	}
 

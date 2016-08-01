@@ -16,7 +16,7 @@ public class EnrollmentAssociationServiceImpl implements EnrollmentAssociationSe
 			enrollmentAssociationDAO.save(enrollmentAssociation);
 			log.info("EnrollmentAssociation saved");
 		} catch(Exception e) {
-			log.severe("Could not save enrollmentAssociation");
+			log.severe("Could not save enrollmentAssociation " + e.getMessage());
 			return false;
 		}
 			
