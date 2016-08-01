@@ -6,12 +6,18 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
+import com.kcomp.dao.DeviceHistoryDAO;
+import com.kcomp.dao.DeviceHistoryJpaDAO;
 import com.kcomp.dao.DeviceJpaDAO;
 import com.kcomp.dao.EnrollmentAssociationJpaDAO;
 import com.kcomp.model.Device;
+import com.kcomp.model.DeviceHistory;
+import com.kcomp.model.DeviceState;
 import com.kcomp.model.EnrollmentAssociation;
 import com.kcomp.model.User;
 import com.kcomp.model.Vehicle;
+import com.kcomp.service.DeviceHistoryService;
+import com.kcomp.service.DeviceHistoryServiceImpl;
 import com.kcomp.service.DeviceService;
 import com.kcomp.service.DeviceServiceImpl;
 import com.kcomp.service.EnrollmentAssociationService;
@@ -101,9 +107,53 @@ public class App
 	    }
 	}
 	
+	
+	public static void testDH(){
+
+		EntityManagerFactory entityManagerFactory = 
+	            Persistence.createEntityManagerFactory("test-jpa");
+    	
+	    DeviceHistoryJpaDAO deviceHistoryDao = new DeviceHistoryJpaDAO();
+	    EntityManager em = entityManagerFactory.createEntityManager();
+	    deviceHistoryDao.setEntityManager(em);
+	    
+	    DeviceHistoryService deviceHistoryService = new DeviceHistoryServiceImpl();
+	    
+	    deviceHistoryService.setDeviceHistoryDao(deviceHistoryDao);
+	    
+	   	DeviceHistory deviceHistory = new DeviceHistory();
+	   	
+	   	User user = new User();
+	   	
+	   	user.setAge(24);
+	   	user.setName("Bob");
+	   	
+	   	Device device = new Device();
+	   	
+	   	device.setIdentifier("12345");
+	   	
+	   	deviceHistory.setDevice(device);
+	   	deviceHistory.setUser(user);
+	   	deviceHistory.setDeviceState(DeviceState.AVAILABLE);
+
+	   	deviceHistoryService.createDeviceHistory(deviceHistory);
+	    
+	   	DeviceHistory found = deviceHistoryService.findByUser(user);
+	    
+	    log.info("Loading DeviceHistory");
+	    
+	    try{
+	    	System.out.println(found.toString());
+	    	log.info("DeviceHistory found");
+	    }
+	    catch(NullPointerException npe){
+	    	log.severe("DeviceHistory not found: " + npe.getMessage());
+	    }
+	}
+	
     public static void main( String[] args ){
       
-    	testEA();
+    	testDH();
     	
     }
 }

@@ -33,7 +33,22 @@ public class EnrollmentAssociation implements Serializable{
 	@JoinColumn (name = "user_id")
 	private User user;
 	
+	private EnrollmentStatus status;
+
+	
 	public EnrollmentAssociation(){}
+
+	
+	public EnrollmentStatus getStatus() {
+		return status;
+	}
+
+
+
+	public void setStatus(EnrollmentStatus status) {
+		this.status = status;
+	}
+
 
 	public Long getId() {
 		return id;
@@ -59,12 +74,13 @@ public class EnrollmentAssociation implements Serializable{
 		this.user = user;
 	}
 
+
 	@Override
 	public String toString() {
-		return "EnrollmentAssociation [id=" + id + ", vehicle=" + vehicle
-				+ ", user=" + user + "]";
+		return "EnrollmentAssociation [id=" + id + ", vehicle=" + vehicle + ", user=" + user + ", status=" + status
+				+ "]";
 	}
-	
+
 	
 	
 }

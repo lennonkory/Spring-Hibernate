@@ -8,7 +8,6 @@ public interface DeviceService {
 	boolean createDevice(Device device);
 	Device loadDeviceByIdentifier(String identifier);
 	public DeviceDAO getDeviceDao();
-
 	public void setDeviceDao(DeviceDAO deviceDao);
 	
 }
