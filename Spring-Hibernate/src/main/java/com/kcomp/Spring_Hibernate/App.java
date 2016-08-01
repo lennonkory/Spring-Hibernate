@@ -16,6 +16,8 @@ import com.kcomp.model.Device;
 import com.kcomp.model.DeviceHistory;
 import com.kcomp.model.DeviceState;
 import com.kcomp.model.EnrollmentAssociation;
+import com.kcomp.model.EnrollmentStatus;
+import com.kcomp.model.Role;
 import com.kcomp.model.User;
 import com.kcomp.model.Vehicle;
 import com.kcomp.service.DeviceHistoryService;
@@ -159,8 +161,27 @@ public class App
     	
     	Utils utils = context.getBean(Utils.class);
     	
-    	utils.logOn("Kory", "1234");
+    	String name = "Kory";
+    	String identifier = "12345";
     	
+    	User user = utils.saveUser("Kory", 32);
+    	
+    	Vehicle vehicle = utils.saveVehicle("Ford");
+    	
+    	Device device = utils.saveDevice(identifier);
+    	
+    	EnrollmentAssociation enrollmentAssociation = utils.saveEnrollmentAssociation(user, vehicle, EnrollmentStatus.ACTIVE, Role.OWNER);
+    	
+    	utils.saveDeviceHistory(user, device, DeviceState.OPERATIONAL);
+    	
+    	utils.logOn(name, identifier);
+    	
+    	
+    	User guest = utils.saveUser("Bob", 18);
+    	Device device2 = utils.saveDevice("1212");
+    	utils.associateUserAndGuest(user, guest, vehicle,device2);
+    	
+    	utils.removeAssociation(user, guest, vehicle);
     	
     }
 }

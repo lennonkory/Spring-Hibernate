@@ -2,7 +2,9 @@ package com.kcomp.Spring_Hibernate;
 
 import java.util.logging.Logger;
 
+import com.kcomp.model.DeviceState;
 import com.kcomp.model.EnrollmentStatus;
+import com.kcomp.model.Role;
 import com.kcomp.model.User;
 import com.kcomp.model.Vehicle;
 import com.kcomp.model.Device;
@@ -95,9 +97,16 @@ public class Utils {
 				device.setIdentifier(identifier);
 				this.deviceService.createDevice(device);
 			}
+			
 			enrollmentDevice.setDevice(device);
 			
 			this.enrollmentDeviceService.createEnrollmentDevice(enrollmentDevice);
+			
+			DeviceHistory deviceHistory = this.deviceHistoryService.findByDevice(device);
+			if(deviceHistory == null){
+				this.saveDeviceHistory(user, device, DeviceState.OPERATIONAL);
+			}
+			
 		}
 		else{
 			
@@ -113,6 +122,118 @@ public class Utils {
 		System.out.println(device.toString());
 		System.out.println(enrollmentDevice.toString());
 		
+	}
+	
+	public User saveUser(String name, int age){
+		User user = new User();
+		user.setAge(age);
+		user.setName(name);
+		this.userService.createUser(user);
+		return user;
+	}
+	
+	public Device saveDevice(String identifier){
+		Device device = new Device();
+		device.setIdentifier(identifier);
+		this.deviceService.createDevice(device);
+		return device;
+	}
+	
+	public Vehicle saveVehicle(String make){
+		Vehicle vehicle = new Vehicle();
+		vehicle.setMake(make);
+		this.vehicleService.createVehicle(vehicle);
+		return vehicle;
+	}
+	
+	public DeviceHistory saveDeviceHistory(User user, Device device, DeviceState deviceState){
+		
+		DeviceHistory deviceHistory = new DeviceHistory();
+		deviceHistory.setDevice(device);
+		deviceHistory.setUser(user);
+		deviceHistory.setDeviceState(deviceState);
+		this.deviceHistoryService.createDeviceHistory(deviceHistory);
+		return deviceHistory;
+		
+	}
+	
+	public EnrollmentAssociation saveEnrollmentAssociation(User user, Vehicle vehicle, EnrollmentStatus status, Role role){
+		EnrollmentAssociation enrollmentAssociation = new EnrollmentAssociation();
+		enrollmentAssociation.setUser(user);
+		enrollmentAssociation.setVehicle(vehicle);
+		enrollmentAssociation.setStatus(status);
+		enrollmentAssociation.setRole(role);
+		this.enrollmentAssociationService.createEnrollmentAssociation(enrollmentAssociation);
+		return enrollmentAssociation;
+	}
+	
+	public EnrollmentDevice saveEnrollmentDevice(User user, Device device, EnrollmentStatus status){
+		EnrollmentDevice enrollmentDevice = new EnrollmentDevice();
+		enrollmentDevice.setDevice(device);
+		enrollmentDevice.setUser(user);
+		enrollmentDevice.setStatus(status);
+		this.enrollmentDeviceService.createEnrollmentDevice(enrollmentDevice);
+		return enrollmentDevice;
+	}
+	
+	public void associateUserAndGuest(User owner, User guest, Vehicle vehicle, Device device){
+		EnrollmentAssociation enrollmentAssociation = this.enrollmentAssociationService.findByUserAndVehicle(guest, vehicle);
+		
+		if(enrollmentAssociation != null){
+			throw new RuntimeException("Already associated!");
+		}
+		
+		enrollmentAssociation = new EnrollmentAssociation();
+		enrollmentAssociation.setStatus(EnrollmentStatus.ACTIVE);
+		enrollmentAssociation.setUser(guest);
+		enrollmentAssociation.setVehicle(vehicle);
+		enrollmentAssociation.setRole(Role.GUEST);
+		
+		EnrollmentDevice ed = null;
+		
+		this.enrollmentAssociationService.createEnrollmentAssociation(enrollmentAssociation);
+		
+		if(this.deviceService.loadDeviceByIdentifier(device.getIdentifier()) == null){
+			this.deviceService.createDevice(device);
+			DeviceHistory deviceHistory = this.saveDeviceHistory(guest, device, DeviceState.OPERATIONAL);
+			this.deviceHistoryService.createDeviceHistory(deviceHistory);
+			ed = this.saveEnrollmentDevice(guest, device, EnrollmentStatus.ACTIVE);
+		}
+		else{
+			ed = this.enrollmentDeviceService.findByDevice(device);
+			if(ed == null){
+				ed = this.saveEnrollmentDevice(guest, device, EnrollmentStatus.ACTIVE);
+				DeviceHistory deviceHistory = this.saveDeviceHistory(guest, device, DeviceState.OPERATIONAL);
+				this.deviceHistoryService.createDeviceHistory(deviceHistory);
+			}
+			DeviceHistory deviceHistory = this.deviceHistoryService.findByDevice(device);
+			if(deviceHistory == null){
+				deviceHistory = this.saveDeviceHistory(guest, device, DeviceState.OPERATIONAL);
+			}
+		}
+		
+		
+	}
+	
+	public void removeAssociation(User user,User guest, Vehicle vehicle){
+		
+		EnrollmentAssociation enrollmentAssociation = null;
+		enrollmentAssociation = this.enrollmentAssociationService.findByUserAndVehicle(guest, vehicle);
+		
+		if(enrollmentAssociation == null){
+			throw new RuntimeException("No association found!");
+		}
+		
+		enrollmentAssociation.setStatus(EnrollmentStatus.DEACTIVE);
+		
+		this.enrollmentAssociationService.update(enrollmentAssociation);
+		
+		Device device = this.deviceService.findDeviceByUser(guest);
+		
+		DeviceHistory dh = this.deviceHistoryService.findByDevice(device);
+		dh.setDeviceState(DeviceState.NONOPERATION);
+		
+
 	}
 	
 }

@@ -50,7 +50,7 @@ public class DeviceHistoryJpaDAO extends GenericJpaDao<DeviceHistory, Long> impl
 		
 		Query q = this.createQuery(hql);
 		
-		q.setParameter("deivce", device);
+		q.setParameter("device", device);
 		
 		try{
 			deviceHistory = (DeviceHistory)q.getSingleResult();

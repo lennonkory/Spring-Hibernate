@@ -35,6 +35,7 @@ public class EnrollmentAssociation implements Serializable{
 	
 	private EnrollmentStatus status;
 
+	private Role role;
 	
 	public EnrollmentAssociation(){}
 
@@ -43,6 +44,14 @@ public class EnrollmentAssociation implements Serializable{
 		return status;
 	}
 
+	public Role getRole() {
+		return role;
+	}
+
+
+	public void setRole(Role role) {
+		this.role = role;
+	}
 
 
 	public void setStatus(EnrollmentStatus status) {
@@ -74,13 +83,10 @@ public class EnrollmentAssociation implements Serializable{
 		this.user = user;
 	}
 
-
 	@Override
 	public String toString() {
-		return "EnrollmentAssociation [id=" + id + ", vehicle=" + vehicle + ", user=" + user + ", status=" + status
+		return "EnrollmentAssociation [id=" + id + ", vehicle=" + vehicle
+				+ ", user=" + user + ", status=" + status + ", role=" + role
 				+ "]";
 	}
-
-	
-	
 }

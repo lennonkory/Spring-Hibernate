@@ -4,6 +4,7 @@ import java.util.logging.Logger;
 
 import com.kcomp.dao.EnrollmentAssociationDAO;
 import com.kcomp.model.EnrollmentAssociation;
+import com.kcomp.model.User;
 import com.kcomp.model.Vehicle;
 
 public class EnrollmentAssociationServiceImpl implements EnrollmentAssociationService{
@@ -36,6 +37,14 @@ public class EnrollmentAssociationServiceImpl implements EnrollmentAssociationSe
 			EnrollmentAssociationDAO enrollmentAssociationDAO) {
 		this.enrollmentAssociationDAO = enrollmentAssociationDAO;
 		
+	}
+
+	public EnrollmentAssociation findByUserAndVehicle(User user, Vehicle vehicle) {
+		return this.enrollmentAssociationDAO.findByUserAndVehicle(user, vehicle);
+	}
+
+	public void update(EnrollmentAssociation enrollmentAssociation) {
+		this.enrollmentAssociationDAO.update(enrollmentAssociation);
 	}
 
 }
